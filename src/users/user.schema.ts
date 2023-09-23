@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
-import { Address } from "./address.schema";
+import { Address } from "../schemas/address.schema";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -17,7 +17,7 @@ export class User{
     name: string;
 
     @Prop()
-    phone:number;
+    phone:string;
 
     @Prop()
     TwoFA:boolean;
