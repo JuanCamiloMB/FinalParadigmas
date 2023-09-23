@@ -17,10 +17,7 @@ export class Product{
     @Prop()
     rating:number;
 
-    @Prop({ required: true })
-    store:string;
-
-    @Prop({ required: true })
+    @Prop({ required: true, default: 0 })
     stock:number;
 }
 

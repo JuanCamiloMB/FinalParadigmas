@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory, raw } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { Address } from "../address/address.schema";
 
@@ -21,6 +21,12 @@ export class User{
 
     @Prop()
     TwoFA:boolean;
+
+    @Prop({ type:[{ type: mongoose.Schema.Types.ObjectId, ref:'Product' }], default: [] })
+    cart: string[]
+
+    @Prop({ type:[{ type: mongoose.Schema.Types.ObjectId, ref:'Address' }], default: [] })
+    addresses: string[]
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Address' })
     defaultAddress:Address;

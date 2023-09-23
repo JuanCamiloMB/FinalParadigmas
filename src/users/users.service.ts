@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
@@ -9,8 +8,6 @@ import { Model } from 'mongoose';
 export class UsersService {
   
   constructor(@InjectModel(User.name) private userModel: Model<User>){}
-
-  private readonly Users: CreateUserDto[] = [];
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
@@ -21,7 +18,7 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findOneById(id: number): Promise<User | null> {
+  async findOne(id: number): Promise<User | null> {
     try{
       const document = await this.userModel.findById(id).exec();
       return document;
@@ -46,13 +43,5 @@ export class UsersService {
     }catch(error){
       throw new Error(`Error finding document by ${propertyValue}: ${error.message}`);
     }
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
