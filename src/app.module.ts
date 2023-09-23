@@ -3,9 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { ProductsModule } from './products/products.module';
+import { AddressModule } from './address/address.module';
+import { StoresModule } from './stores/stores.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://ecommerce:wprnVAFbwUBJmUDc@cluster0.py32bi4.mongodb.net/?retryWrites=true&w=majority'), UsersModule],
+  imports: [ ConfigModule.forRoot(), MongooseModule.forRoot(`${process.env.MONGODB_URI}`), UsersModule, ProductsModule, AddressModule, StoresModule],
   controllers: [AppController],
   providers: [AppService],
 })
