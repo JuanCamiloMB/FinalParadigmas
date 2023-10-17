@@ -5,7 +5,6 @@ import { User } from './user.schema';
 import { Model } from 'mongoose';
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 
@@ -28,24 +27,23 @@ export class UsersService {
         const errorMessage = error.message;
         // ..
       });
-
     return createdUser.save();
   }
-
+/*
   async signin(email: string, password: string) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         //console.log(userCredential)
         const user = userCredential.user;
-        // ...
+        return "Loged In"
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
   }
-
+*/
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }

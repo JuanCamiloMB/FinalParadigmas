@@ -1,10 +1,11 @@
-import {IsEmail, IsNotEmpty, IsPhoneNumber} from 'class-validator'
+import {IsEmail, IsNotEmpty, IsPhoneNumber, MinLength} from 'class-validator'
 
 export class CreateUserDto {
     @IsEmail()
     email:string;
 
     @IsNotEmpty()
+    @MinLength(6)
     password:string;
 
     @IsNotEmpty()
