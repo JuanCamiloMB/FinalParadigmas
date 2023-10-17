@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
+import { auth } from '../firebase';
 
 @Injectable()
 export class UsersService {
