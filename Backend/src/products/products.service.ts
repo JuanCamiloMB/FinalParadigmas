@@ -19,7 +19,7 @@ export class ProductsService {
     return this.productModel.find().exec();
   }
 
-  async findOne(id: number): Promise<Product | null> {
+  async findOne(id: string): Promise<Product | null> {
     try{
       const document = await this.productModel.findById(id).exec();
       return document;

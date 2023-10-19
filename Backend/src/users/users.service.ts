@@ -7,7 +7,6 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../firebase';
-import axios from 'axios'
 
 @Injectable()
 export class UsersService {
@@ -30,21 +29,7 @@ export class UsersService {
       });
     return createdUser.save();
   }
-/*
-  async signin(email: string, password: string) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        //console.log(userCredential)
-        const user = userCredential.user;
-        return "Loged In"
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-  }
-*/
+
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
