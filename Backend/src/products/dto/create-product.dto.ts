@@ -9,7 +9,7 @@ export class CreateProductDto {
 
     description:string;
 
-    rating:number;
+    rating?:number;
 
     stock:number;
 }

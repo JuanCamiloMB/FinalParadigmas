@@ -14,6 +14,7 @@ import { auth } from "./firebase";
 import { Navigate } from "react-router-dom";
 import Loading from "./pages/Loading";
 import Product from "./pages/Product";
+import CreateProduct from "./pages/CreateProduct";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -48,6 +49,7 @@ function App() {
             <Route path="signin" element={user === null ? <SignIn /> : <Navigate replace to="/profile"/>} />
             <Route path="signup" element={user === null ? <SignUp /> : <Navigate replace to="/profile"/>} />
             <Route path="profile" element={user === null ? <Navigate replace to="/"/> : <Profile user={user}/>}/>
+            <Route path="createproduct" element={user === null ? <NoPage/> : (user.email === "admin@gmail.com"? <CreateProduct/> : <NoPage/>)}/>
             <Route path="*" element={<NoPage />} />
           </Route>
           <Route path="/products" element={<Layout user={user} />}>

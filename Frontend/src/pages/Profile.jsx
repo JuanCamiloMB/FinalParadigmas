@@ -55,7 +55,7 @@ const Profile = (props) => {
     <>
       <h1>Profile</h1>
       <button onClick={logout}>LogOut</button>
-      <button onClick={DeleteUser}>Delete Account</button>
+      {user.email === "admin@gmail.com"? null :<button onClick={DeleteUser}>Delete Account</button>}
     </>
   );
 };

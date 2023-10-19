@@ -49,6 +49,31 @@ function signedIn() {
   );
 }
 
+function admin() {
+  return (
+    <>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/products">Products</Link>
+          </li>
+          <li>
+            <Link to="/createproduct">CrearProducto</Link>
+          </li>
+          <li>
+            <Link to="/profile">Profile</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Outlet />
+    </>
+  );
+}
+
 const Layout = (props) => {
   const [user, setUser] = useState(null)
 
@@ -57,7 +82,7 @@ const Layout = (props) => {
   },[])
 
   return(
-    user === null? notSignedIn() : signedIn()
+    user === null? notSignedIn() : (user.email === "admin@gmail.com"? admin() : signedIn())
   )
 };
 
