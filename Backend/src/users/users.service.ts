@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../firebase';
+import axios from 'axios'
 
 @Injectable()
 export class UsersService {
@@ -80,6 +81,17 @@ export class UsersService {
       throw new Error(
         `Error finding document by ${propertyValue}: ${error.message}`,
       );
+    }
+  }
+
+  async deleteUser(userInfo){
+    try{
+      const res = await this.userModel.deleteOne({email: userInfo.email})
+      console.log(res)
+    } catch(error){
+      throw new Error(
+        `Error deleting by email ${userInfo.email}`
+      )
     }
   }
 }

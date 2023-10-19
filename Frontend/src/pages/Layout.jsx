@@ -54,7 +54,6 @@ const Layout = (props) => {
 
   useEffect(()=>{
     setUser(props.user)
-    console.log(props)
   },[])
 
   return(

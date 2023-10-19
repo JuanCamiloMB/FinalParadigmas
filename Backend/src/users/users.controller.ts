@@ -25,4 +25,9 @@ export class UsersController {
   findOneByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
   }
+
+  @Post('/delete')
+  deleteById(@Body() userInfo: any){
+    return this.usersService.deleteUser(userInfo);
+  }
 }

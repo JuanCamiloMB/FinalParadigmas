@@ -35,9 +35,6 @@ function App() {
 
   useEffect(() => {
     monitorAuthState();
-    if (user!=null){
-      console.log("mail:",user.email)
-    }
   }, []);
 
   return (
@@ -50,7 +47,7 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="signin" element={user === null ? <SignIn /> : <Navigate replace to="/profile"/>} />
             <Route path="signup" element={user === null ? <SignUp /> : <Navigate replace to="/profile"/>} />
-            <Route path="profile" element={user === null ? <Navigate replace to="/"/> : <Profile/>}/>
+            <Route path="profile" element={user === null ? <Navigate replace to="/"/> : <Profile user={user}/>}/>
             <Route path="*" element={<NoPage />} />
           </Route>
         </Routes>
