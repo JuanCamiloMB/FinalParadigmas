@@ -16,7 +16,7 @@ export class CreateUserDto {
 
     TwoFA:boolean;
 
-    cart: any;
+    cart: [{}];
 
     defaultAddress?: any;
 }

@@ -11,10 +11,10 @@ export class Product{
     @Prop({ required: true })
     price:string;
 
-    @Prop()
+    @Prop({default: "No description"})
     description:string;
 
-    @Prop()
+    @Prop({default: 0})
     rating:number;
 
     @Prop({ required: true, default: 0 })

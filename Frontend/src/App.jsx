@@ -54,7 +54,7 @@ function App() {
           </Route>
           <Route path="/products" element={<Layout user={user} />}>
             <Route index element={<Products />} />
-            <Route path=":productId" element={<Product/>}/>
+            <Route path=":productId" element={<Product user={user}/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -6,6 +6,7 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User{
+    _id
 
     @Prop({ required: true, unique: true })
     email:string;
@@ -22,7 +23,7 @@ export class User{
     @Prop()
     TwoFA:boolean;
 
-    @Prop({ type:[{ type: mongoose.Schema.Types.ObjectId, ref:'Product' }], default: [] })
+    @Prop({ type:[{ productId: {type: mongoose.Schema.Types.ObjectId, ref:'Product'}, quantity:{type: Number} }], default: [] })
     cart: string[]
 
     @Prop({ type:[{ type: mongoose.Schema.Types.ObjectId, ref:'Address' }], default: [] })
