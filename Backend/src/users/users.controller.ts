@@ -32,6 +32,11 @@ export class UsersController {
     return this.usersService.addToCart(req.email, req.productId);
   }
 
+  @Post('/api/getcart')
+  getCart(@Body() req:any){
+    return this.usersService.getCart(req.email)
+  }
+
   @Post('/delete')
   deleteById(@Body() userInfo: any){
     return this.usersService.deleteUser(userInfo);

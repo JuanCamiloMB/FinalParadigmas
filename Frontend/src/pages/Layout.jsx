@@ -27,11 +27,12 @@ function notSignedIn() {
   );
 }
 
-function signedIn() {
+function signedIn(userEmail) {
   return (
     <>
       <nav>
         <ul>
+          <li>{userEmail}</li>
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -40,6 +41,9 @@ function signedIn() {
           </li>
           <li>
             <Link to="/profile">Profile</Link>
+          </li>
+          <li>
+            <Link to="/cart">Shoping Cart</Link>
           </li>
         </ul>
       </nav>
@@ -54,6 +58,9 @@ function admin() {
     <>
       <nav>
         <ul>
+          <li>
+            admin
+          </li>
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -82,7 +89,7 @@ const Layout = (props) => {
   },[])
 
   return(
-    user === null? notSignedIn() : (user.email === "admin@gmail.com"? admin() : signedIn())
+    user === null? notSignedIn() : (user.email === "admin@gmail.com"? admin() : signedIn(user.email))
   )
 };
 

@@ -73,18 +73,15 @@ export class UsersService {
   async addToCart(userEmail: string, productId: ObjectId){
     const document = await this.findByEmail(userEmail)
     const cart:Array<any> = document.cart
-    const index = cart.findIndex(pair => pair.productId === productId);
-    console.log("cart: ",cart, " index: ",index)
+    const resultado = cart.findIndex((val)=>{
+        return val.productId.toString() === productId
+    });
     
-    
-    if(index === -1){
+    if(resultado === -1){
       cart.push({productId: productId, quantity: 1})
-      console.log("here")
     } else{
-      cart[index].quantity += 1;
+      cart[resultado].quantity += 1
     }
-    console.log("cart: ",cart)
-    
     
     await this.userModel.findById(document._id).then(
       (user)=>{
@@ -93,7 +90,12 @@ export class UsersService {
         console.log("done")
       }
     )
-    //const update = await this.userModel.updateOne({email: userEmail},{$set:{cart: cart}})
+    const update = await this.userModel.updateOne({email: userEmail},{$set:{cart: cart}})
+  }
+
+  async getCart(userEmail){
+    const document = await this.findByEmail(userEmail)
+    return document.cart
   }
 
   async deleteUser(userInfo){
