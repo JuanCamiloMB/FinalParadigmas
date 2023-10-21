@@ -3,9 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model, ObjectId } from 'mongoose';
-import {
-  createUserWithEmailAndPassword,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { ProductsService } from 'src/products/products.service';
 
@@ -70,42 +68,44 @@ export class UsersService {
     }
   }
 
-  async addToCart(userEmail: string, productId: ObjectId){
-    const document = await this.findByEmail(userEmail)
-    const cart:Array<any> = document.cart
-    const resultado = cart.findIndex((val)=>{
-        return val.productId.toString() === productId
+  async deleteUser(userInfo) {
+    try {
+      const res = await this.userModel.deleteOne({ email: userInfo.email });
+      console.log(res);
+    } catch (error) {
+      throw new Error(`Error deleting by email ${userInfo.email}`);
+    }
+  }
+
+  async addToCart(userEmail: string, productId: ObjectId) {
+    const document = await this.findByEmail(userEmail);
+    const cart: Array<any> = document.cart;
+    const resultado = cart.findIndex((val) => {
+      return val.productId.toString() === productId;
     });
-    
-    if(resultado === -1){
-      cart.push({productId: productId, quantity: 1})
-    } else{
-      cart[resultado].quantity += 1
+
+    if (resultado === -1) {
+      cart.push({ productId: productId, quantity: 1 });
+    } else {
+      cart[resultado].quantity += 1;
     }
-    
-    await this.userModel.findById(document._id).then(
-      (user)=>{
-        user.cart = cart
-        user.save()
-        console.log("done")
-      }
-    )
-    const update = await this.userModel.updateOne({email: userEmail},{$set:{cart: cart}})
+
+    await this.userModel.findById(document._id).then((user) => {
+      user.cart = cart;
+      user.save();
+    });
+    const update = await this.userModel.updateOne(
+      { email: userEmail },
+      { $set: { cart: cart } },
+    );
   }
 
-  async getCart(userEmail){
-    const document = await this.findByEmail(userEmail)
-    return document.cart
+  async getCart(userEmail) {
+    const document = await this.findByEmail(userEmail);
+    return document.cart;
   }
 
-  async deleteUser(userInfo){
-    try{
-      const res = await this.userModel.deleteOne({email: userInfo.email})
-      console.log(res)
-    } catch(error){
-      throw new Error(
-        `Error deleting by email ${userInfo.email}`
-      )
-    }
+  async payCart(){
+    
   }
 }

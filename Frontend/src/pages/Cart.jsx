@@ -6,25 +6,31 @@ const Cart = (props) => {
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState([]);
   const [parcialTotals, setParcialTotals] = useState([]);
+  const [total, setTotal] = useState(0);
   const email = props.user.email;
 
   useEffect(() => {
-    getCart();
+    getCart()
   }, []);
 
-  const getParcialTotal = () => {
+  const getParcialTotal = (theProducts, theQuantities) => {
+    if(theProducts.length !== theQuantities.length){
+      return[]
+    }
     const parcialTotals = [];
-    for (let i = 0; i <= products.length; i++) {
-      let prod = products[i].price * quantities[i];
+    for (let i = 0; i < theProducts.length; i++) {
+      let prod = theProducts[i].price * theQuantities[i].quantity;
       parcialTotals.push(prod);
     }
     setParcialTotals(parcialTotals);
+    return parcialTotals;
   };
 
-  const getTotal = () => {
-    sum = 0;
-    parcialTotals.forEach((num) => sum + num);
-    return sum;
+  const getTotal = (theParcialTotal) => {
+    let sum = 0;
+    theParcialTotal.forEach((num) => {sum += num});
+    setTotal(sum);
+    return sum
   };
 
   const getCart = async () => {
@@ -33,8 +39,11 @@ const Cart = (props) => {
         email: email,
       });
       const cart = res.data;
-      const q = await cart.map((val) => {
-        return val.quantity;
+      const q = cart.map((val) => {
+        return {
+          productId: val.productId,
+          quantity: val.quantity,
+        };
       });
       setQuantities(q);
       const dataPromises = cart.map(async (element) => {
@@ -44,49 +53,60 @@ const Cart = (props) => {
         const result = response.data;
         return result;
       });
-      const fetcedProducts = await Promise.all(dataPromises);
-      setProducts(fetcedProducts);
+      const fetchedProducts = await Promise.all(dataPromises);
+      setProducts(fetchedProducts);
+      const parcialTotals = getParcialTotal(fetchedProducts, q)
+      setParcialTotals(parcialTotals)
+      getTotal(parcialTotals)
+      
+      return new Promise((resolve) => {
+        resolve(fetchedProducts);
+      })
+
     } catch (error) {
       console.log(error);
     }
   };
 
-  const pay = ()=>{
-
-  }
+  const pay = () => {};
 
   return (
     <>
       <table>
-        <tr>
-          <th>Product</th>
-          <th>Individual Price</th>
-          <th>Quantity</th>
-          <th> </th>
-        </tr>
-        <tr>
-          <td>
-            {products.map((product) => {
-              return <p>{product.name}</p>;
-            })}
-          </td>
-          <td>
-            {products.map((product) => {
-              return <p>{product.price}</p>;
-            })}
-          </td>
-          <td>
-            {quantities.map((num) => {
-              return <p>{num}</p>;
-            })}
-          </td>
-          <td>
-            {parcialTotals.map((num) => {
-              return <p>{num}</p>;
-            })}
-          </td>
-        </tr>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Individual Price</th>
+            <th>Quantity</th>
+            <th>Total by product</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {products.map((product) => {
+                return <p key={product._id}>{product.name}</p>;
+              })}
+            </td>
+            <td>
+              {products.map((product) => {
+                return <p key={product._id}>{product.price}</p>;
+              })}
+            </td>
+            <td>
+              {quantities.map((element) => {
+                return <p key={element.productId}>{element.quantity}</p>;
+              })}
+            </td>
+            <td>
+              {parcialTotals.map((num, index) => {
+                return <p key={index}>{num}</p>;
+              })}
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <h2>Total: ${total}</h2>
       <button onClick={pay}>Pay</button>
     </>
   );

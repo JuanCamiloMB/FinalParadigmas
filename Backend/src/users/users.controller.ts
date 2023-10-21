@@ -37,6 +37,11 @@ export class UsersController {
     return this.usersService.getCart(req.email)
   }
 
+  @Post('/api/paycart')
+  payCart(@Body() req:any){
+    return this.usersService.payCart()
+  }
+
   @Post('/delete')
   deleteById(@Body() userInfo: any){
     return this.usersService.deleteUser(userInfo);
