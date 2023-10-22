@@ -5,11 +5,11 @@ import { User } from './user.schema';
 import { Model, ObjectId } from 'mongoose';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { ProductsService } from 'src/products/products.service';
+import { Product } from 'src/products/product.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>,@InjectModel(Product.name) private productModel: Model<Product>) {}
 
   async create(createUserDto: CreateUserDto) {
     const createdUser = new this.userModel(createUserDto);
@@ -100,12 +100,26 @@ export class UsersService {
     );
   }
 
-  async getCart(userEmail) {
+  async getCart(userEmail: any) {
     const document = await this.findByEmail(userEmail);
     return document.cart;
   }
 
-  async payCart(){
+  async payCart(userEmail:any, uid:string, total:number){
+    const document = await this.userModel.findOne({email: userEmail});
+    const cart = document.cart;
     
+    //Bank API here
+
+    cart.forEach(async (element)=>{
+      const doc = await this.productModel.findOne({_id: element.productId})
+      doc.stock -= element.quantity
+      await doc.save()
+    })
+
+    document.cart = []
+    document.save()
+
+    return "Done payment"
   }
 }

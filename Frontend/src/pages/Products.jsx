@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Products = () => {
@@ -10,12 +10,12 @@ const Products = () => {
     getProducts();
   }, []);
 
-  const getProducts = async () => { //http://localhost:3000/products
-    try{
+  const getProducts = async () => {
+    try {
       const response = await axios.get("http://localhost:3000/products");
       setProducts(response.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -25,14 +25,14 @@ const Products = () => {
       <ul>
         {products.map((product) => {
           return (
-            <li key={product.id}>
-              <ul>
-                <li><Link to={'/products/'+product._id}>{product.name}</Link></li>
-                <li>{product.price}</li>
-                <li>{product.description}</li>
-                <li>{product.rating}</li>
-                <li>{product.stock}</li>
-              </ul>
+            <li key={product._id}>
+              <h3>
+                <Link to={"/products/" + product._id}>{product.name}</Link>
+              </h3>
+              <h4>{product.price}</h4>
+              <p>{product.description}</p>
+              <p>{product.rating}</p>
+              <p>{product.stock}</p>
             </li>
           );
         })}

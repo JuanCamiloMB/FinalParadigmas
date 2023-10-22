@@ -1,19 +1,22 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Cart = (props) => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState([]);
   const [parcialTotals, setParcialTotals] = useState([]);
   const [total, setTotal] = useState(0);
   const email = props.user.email;
+  const uid = props.user.uid;
 
   useEffect(() => {
     getCart()
   }, []);
 
-  const getParcialTotal = (theProducts, theQuantities) => {
+  const getParcialTotal = (theProducts, theQuantities) => {//Mi mamá hizo esto
     if(theProducts.length !== theQuantities.length){
       return[]
     }
@@ -39,6 +42,7 @@ const Cart = (props) => {
         email: email,
       });
       const cart = res.data;
+      setLocalCart(cart)
       const q = cart.map((val) => {
         return {
           productId: val.productId,
@@ -68,7 +72,15 @@ const Cart = (props) => {
     }
   };
 
-  const pay = () => {};
+  const pay = async () => {
+    const res = await axios.post("http://localhost:3000/users/api/paycart", {
+      email: email,
+      uid: uid,
+      total: total
+    });
+    console.log(res.data)
+    navigate(0)
+  };
 
   return (
     <>

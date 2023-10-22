@@ -39,7 +39,7 @@ export class UsersController {
 
   @Post('/api/paycart')
   payCart(@Body() req:any){
-    return this.usersService.payCart()
+    return this.usersService.payCart(req.email, req.uid, req.total)
   }
 
   @Post('/delete')

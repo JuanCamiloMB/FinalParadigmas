@@ -24,7 +24,7 @@ export class User{
     TwoFA:boolean;
 
     @Prop({ type:[{ productId: {type: mongoose.Schema.Types.ObjectId, ref:'Product'}, quantity:{type: Number} }], default: [] })
-    cart: string[]
+    cart: {productId:string, quantity:number}[]
 
     @Prop({ type:[{ type: mongoose.Schema.Types.ObjectId, ref:'Address' }], default: [] })
     addresses: string[]
