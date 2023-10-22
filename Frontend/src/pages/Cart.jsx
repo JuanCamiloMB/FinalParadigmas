@@ -4,37 +4,28 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Cart = (props) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState([]);
-  const [parcialTotals, setParcialTotals] = useState([]);
   const [total, setTotal] = useState(0);
 
   const email = props.user.email;
   const uid = props.user.uid;
 
   useEffect(() => {
-    getCart()
+    getCart();
   }, []);
 
-  const getParcialTotal = (theProducts, theQuantities) => {//Mi mamá hizo esto
-    if(theProducts.length !== theQuantities.length){
-      return[]
-    }
-    const parcialTotals = [];
-    for (let i = 0; i < theProducts.length; i++) {
-      let prod = theProducts[i].price * theQuantities[i].quantity;
-      parcialTotals.push(prod);
-    }
-    setParcialTotals(parcialTotals);
-    return parcialTotals;
-  };
+  useEffect(()=>{
+    getTotal()
+  },[products])
 
-  const getTotal = (theParcialTotal) => {
-    let sum = 0;
-    theParcialTotal.forEach((num) => {sum += num});
-    setTotal(sum);
-    return sum
+  const getTotal = () => {
+    let sum =0
+    products.forEach((product, index)=>{
+      sum = sum + (product.price * quantities[index])
+    })
+    setTotal(sum)
   };
 
   const getCart = async () => {
@@ -44,10 +35,7 @@ const Cart = (props) => {
       });
       const cart = res.data;
       const q = cart.map((val) => {
-        return {
-          productId: val.productId,
-          quantity: val.quantity,
-        };
+        return val.quantity;
       });
       setQuantities(q);
       const dataPromises = cart.map(async (element) => {
@@ -59,14 +47,26 @@ const Cart = (props) => {
       });
       const fetchedProducts = await Promise.all(dataPromises);
       setProducts(fetchedProducts);
-      const parcialTotals = getParcialTotal(fetchedProducts, q)
-      setParcialTotals(parcialTotals)
-      getTotal(parcialTotals)
-      
+
       return new Promise((resolve) => {
         resolve(fetchedProducts);
-      })
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  const remfromcart = async (productId) => {
+    try {
+      await axios
+        .post("http://localhost:3000/users/api/remfromcart", {
+          email: email,
+          productId: productId,
+        })
+        .then((res) => {
+          console.log(res);
+          navigate(0);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -76,10 +76,10 @@ const Cart = (props) => {
     const res = await axios.post("http://localhost:3000/users/api/paycart", {
       email: email,
       uid: uid,
-      total: total
+      total: total,
     });
-    console.log(res.data)
-    navigate(0)
+    console.log(res.data);
+    navigate(0);
   };
 
   return (
@@ -94,28 +94,17 @@ const Cart = (props) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              {products.map((product) => {
-                return <p key={product._id}>{product.name}</p>;
-              })}
-            </td>
-            <td>
-              {products.map((product) => {
-                return <p key={product._id}>{product.price}</p>;
-              })}
-            </td>
-            <td>
-              {quantities.map((element) => {
-                return <p key={element.productId}>{element.quantity}</p>;
-              })}
-            </td>
-            <td>
-              {parcialTotals.map((num, index) => {
-                return <p key={index}>{num}</p>;
-              })}
-            </td>
-          </tr>
+          {products.map((product, index) => {
+            return (
+              <tr key={product._id}>
+                <td>{product.name}</td>
+                <td>{product.price}</td>
+                <td>{quantities[index]}</td>
+                <td>{product.price * quantities[index]}</td>
+                <td><button onClick={()=>remfromcart(product._id)}>Remove</button></td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <h2>Total: ${total}</h2>

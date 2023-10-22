@@ -80,14 +80,14 @@ export class UsersService {
   async addToCart(userEmail: string, productId: ObjectId) {
     const document = await this.findByEmail(userEmail);
     const cart: Array<any> = document.cart;
-    const resultado = cart.findIndex((val) => {
+    const prodtoadd = cart.findIndex((val) => {
       return val.productId.toString() === productId;
     });
 
-    if (resultado === -1) {
+    if (prodtoadd === -1) {
       cart.push({ productId: productId, quantity: 1 });
     } else {
-      cart[resultado].quantity += 1;
+      cart[prodtoadd].quantity += 1;
     }
 
     await this.userModel.findById(document._id).then((user) => {
@@ -98,6 +98,23 @@ export class UsersService {
       { email: userEmail },
       { $set: { cart: cart } },
     );
+  }
+
+  async remfromcart(userEmail: string, productId: ObjectId){
+    const document = await this.userModel.findOne({email: userEmail});
+    const cart: Array<any> = document.cart;
+    const prodtorem = cart.findIndex((val)=>{
+      return val.productId.toString() === productId;
+    })
+    if(prodtorem === -1){
+      return "Product not in cart"
+    }else{
+      cart.splice(prodtorem,1)
+      document.cart = cart
+      document.save()
+    }
+    return document
+
   }
 
   async getCart(userEmail: any) {

@@ -45,7 +45,7 @@ const Product = (props) => {
 
   useEffect(() => {
     getProduct();
-  }, []);
+  }, [product]);
   return (
     <>
       {fetched ? (
@@ -58,7 +58,7 @@ const Product = (props) => {
           {user === null ? (
             <button onClick={goToSignIn}>SignIn to Buy</button>
           ) : (
-            <button onClick={addToCart}>Add to cart</button>
+            <button onClick={addToCart} disabled={product.stock<1}>Add to cart</button>
           )}
         </>
       ) : (
