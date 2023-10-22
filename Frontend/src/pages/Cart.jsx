@@ -9,6 +9,7 @@ const Cart = (props) => {
   const [quantities, setQuantities] = useState([]);
   const [parcialTotals, setParcialTotals] = useState([]);
   const [total, setTotal] = useState(0);
+
   const email = props.user.email;
   const uid = props.user.uid;
 
@@ -42,7 +43,6 @@ const Cart = (props) => {
         email: email,
       });
       const cart = res.data;
-      setLocalCart(cart)
       const q = cart.map((val) => {
         return {
           productId: val.productId,
