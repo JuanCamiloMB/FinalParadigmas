@@ -2,28 +2,41 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [inputText, setInputText] = useState("");
+  const productsTotal = useRef();
+
+  function handlefilter() {
+    if (handlefilter.debounce) {
+      clearTimeout(handlefilter.debounce);
+    }
+
+    handlefilter.debounce = setTimeout(() => {
+      setProducts(
+        [...productsTotal.current].filter((product) =>
+          product.name.toLowerCase().includes(inputText)
+        )
+      );
+    }, 500);
+  }
 
   useEffect(() => {
-    if (inputText === "") {
-      console.log("here1")
-      getProducts();
-    } else {
-      console.log("here")
-      const filteredProducts = products.filter((product) => {
-        return product.name.toLowerCase().includes(inputText);
-      });
-      setProducts(filteredProducts);
-    }
-  }, [inputText, products]);
+    getProducts();
+  }, []);
+
+  useEffect(() => {
+    if (inputText === "" && products.length == 0) return;
+    handlefilter();
+  }, [inputText]);
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/products");
-      setProducts(response.data);
+      const { data } = await axios.get("http://localhost:3000/products");
+      setProducts(data);
+      productsTotal.current = data;
     } catch (error) {
       console.log(error);
     }
