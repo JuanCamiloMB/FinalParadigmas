@@ -32,6 +32,11 @@ export class UsersController {
     return this.usersService.addToCart(req.email, req.productId);
   }
 
+  @Post('/api/modifyquantity')
+  modifyQuantity(@Body() req:any){
+    return this.usersService.modifyQuantity(req.email, req.productId, req.quantity);
+  }
+
   @Post('/api/remfromcart')
   remfromcart(@Body() req:any){
     return this.usersService.remfromcart(req.email, req.productId);

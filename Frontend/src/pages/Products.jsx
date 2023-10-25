@@ -5,10 +5,20 @@ import { Link } from "react-router-dom";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [inputText, setInputText] = useState("");
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    if (inputText === "") {
+      console.log("here1")
+      getProducts();
+    } else {
+      console.log("here")
+      const filteredProducts = products.filter((product) => {
+        return product.name.toLowerCase().includes(inputText);
+      });
+      setProducts(filteredProducts);
+    }
+  }, [inputText, products]);
 
   const getProducts = async () => {
     try {
@@ -19,9 +29,20 @@ const Products = () => {
     }
   };
 
+  const handleInput = (e) => {
+    let lowercase = e.target.value.toLowerCase();
+    setInputText(lowercase);
+  };
+
   return (
     <>
       <h1>Products</h1>
+
+      <input
+        type="search"
+        placeholder="Search Juanguicommerce"
+        onChange={handleInput}
+      />
       <ul>
         {products.map((product) => {
           return (

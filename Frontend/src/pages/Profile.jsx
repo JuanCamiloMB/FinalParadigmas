@@ -3,14 +3,10 @@ import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const Profile = (props) => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-
+  const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
   const user = props.user;
 
@@ -19,16 +15,7 @@ const Profile = (props) => {
     navigate(0);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const DeleteUser = async () => {
-    
     await deleteUser(user)
       .then(() => {
         console.log("user deleted");
@@ -49,13 +36,37 @@ const Profile = (props) => {
         console.log(error);
       });
   };
-  
+
+  const getUserInfo = async () => {
+    const res = await axios.get(
+      `http://localhost:3000/users/api/${user.email}`
+    );
+    setUserInfo(res.data);
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <>
       <h1>Profile</h1>
+      {userInfo ? (
+        <>
+          <h3>Name:</h3>
+          <p>{userInfo.name}</p>
+          <h3>Email:</h3>
+          <p>{userInfo.email}</p>
+          <h3>Phone:</h3>
+          <p>{userInfo.phone}</p>
+          <h3>Addresses:</h3>
+          <p>{userInfo.addresses}</p>
+        </>
+      ) : null}
       <button onClick={logout}>LogOut</button>
-      {user.email === "admin@gmail.com"? null :<button onClick={DeleteUser}>Delete Account</button>}
+      {user.email === "admin@gmail.com" ? null : (
+        <button onClick={DeleteUser}>Delete Account</button>
+      )}
     </>
   );
 };

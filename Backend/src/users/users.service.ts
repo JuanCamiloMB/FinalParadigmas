@@ -86,8 +86,6 @@ export class UsersService {
 
     if (prodtoadd === -1) {
       cart.push({ productId: productId, quantity: 1 });
-    } else {
-      cart[prodtoadd].quantity += 1;
     }
 
     await this.userModel.findById(document._id).then((user) => {
@@ -98,6 +96,20 @@ export class UsersService {
       { email: userEmail },
       { $set: { cart: cart } },
     );
+  }
+
+  async modifyQuantity(userEmail: string, productId: ObjectId, quantity: number){
+    const document = await this.userModel.findOne({email: userEmail})
+    const cart = document.cart
+    cart.forEach((element)=>{
+      if(element.productId.toString() === productId.toString()){
+        element.quantity = quantity
+      }
+    })
+    document.cart = cart
+    document.save()
+    return 
+    
   }
 
   async remfromcart(userEmail: string, productId: ObjectId){

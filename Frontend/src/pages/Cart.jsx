@@ -16,16 +16,16 @@ const Cart = (props) => {
     getCart();
   }, []);
 
-  useEffect(()=>{
-    getTotal()
-  },[products])
+  useEffect(() => {
+    getTotal();
+  }, [products]);
 
   const getTotal = () => {
-    let sum =0
-    products.forEach((product, index)=>{
-      sum = sum + (product.price * quantities[index])
-    })
-    setTotal(sum)
+    let sum = 0;
+    products.forEach((product, index) => {
+      sum = sum + product.price * quantities[index];
+    });
+    setTotal(sum);
   };
 
   const getCart = async () => {
@@ -63,9 +63,9 @@ const Cart = (props) => {
           email: email,
           productId: productId,
         })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res);
-          navigate(0);
+          await getCart();
         });
     } catch (error) {
       console.log(error);
@@ -80,6 +80,20 @@ const Cart = (props) => {
     });
     console.log(res.data);
     navigate(0);
+  };
+
+  const updateQuantity = async (event, productId, quantity) => {
+    event.preventDefault();
+    getTotal();
+    const res = await axios.post(
+      "http://localhost:3000/users/api/modifyquantity",
+      {
+        email: email,
+        productId: productId,
+        quantity: quantity,
+      }
+    );
+    console.log(res.data);
   };
 
   return (
@@ -99,9 +113,34 @@ const Cart = (props) => {
               <tr key={product._id}>
                 <td>{product.name}</td>
                 <td>{product.price}</td>
-                <td>{quantities[index]}</td>
+                <td>
+                  <form
+                    onSubmit={(e) =>
+                      updateQuantity(e, product._id, quantities[index])
+                    }
+                  >
+                    <input
+                      type="number"
+                      value={quantities[index]}
+                      id="quantity"
+                      name="quantity"
+                      min={1}
+                      max={product.stock}
+                      onChange={(e) => {
+                        let updatedQuantities = [...quantities];
+                        updatedQuantities[index] = e.target.value;
+                        setQuantities(updatedQuantities);
+                      }}
+                    />
+                    <button type="submit">Update</button>
+                  </form>
+                </td>
                 <td>{product.price * quantities[index]}</td>
-                <td><button onClick={()=>remfromcart(product._id)}>Remove</button></td>
+                <td>
+                  <button onClick={() => remfromcart(product._id)}>
+                    Remove
+                  </button>
+                </td>
               </tr>
             );
           })}
