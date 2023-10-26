@@ -3,10 +3,13 @@ import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 function notSignedIn() {
+  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
+  const nav_style = "p-1.5 m-1.5 flex justify-center bg-orange-700"
+  const ul_style = "flex flex-row gap-10"
   return (
-    <>
-      <nav>
-        <ul>
+    <div className={div_style}>
+      <nav className={nav_style}>
+        <ul className={ul_style}>
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -23,15 +26,18 @@ function notSignedIn() {
       </nav>
 
       <Outlet />
-    </>
+    </div>
   );
 }
 
 function signedIn(userEmail) {
+  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
+  const nav_style = "p-1.5 m-1.5 flex justify-center bg-orange-700"
+  const ul_style = "flex flex-row gap-10"
   return (
-    <>
-      <nav>
-        <ul>
+    <div className={div_style}>
+      <nav className={nav_style}>
+        <ul className={ul_style}>
           <li>{userEmail}</li>
           <li>
             <Link to="/">Home</Link>
@@ -49,15 +55,18 @@ function signedIn(userEmail) {
       </nav>
 
       <Outlet />
-    </>
+    </div>
   );
 }
 
 function admin() {
+  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
+  const nav_style = "p-1.5 m-1.5 flex justify-center bg-blue-500"
+  const ul_style = "flex flex-row gap-10"
   return (
-    <>
-      <nav>
-        <ul>
+    <div className={div_style}>
+      <nav className={nav_style}>
+        <ul className={ul_style}>
           <li>
             admin
           </li>
@@ -77,7 +86,7 @@ function admin() {
       </nav>
 
       <Outlet />
-    </>
+    </div>
   );
 }
 

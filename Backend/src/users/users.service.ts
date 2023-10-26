@@ -6,6 +6,7 @@ import { Model, ObjectId } from 'mongoose';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { Product } from 'src/products/product.schema';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -65,6 +66,26 @@ export class UsersService {
       throw new Error(
         `Error finding document by ${propertyValue}: ${error.message}`,
       );
+    }
+  }
+
+  async updateUser(userInfo:UpdateUserDto){
+    try{
+      const document = await this.userModel.findOne({email: userInfo.email})
+      if(document){
+        document.email = userInfo.email
+        document.password = userInfo.password
+        document.name = userInfo.name
+        document.phone = userInfo.phone
+        document.TwoFA = userInfo.TwoFA
+        document.save()
+        return userInfo
+      } else{
+        return "No user found"
+      }
+    }catch(error){
+      console.log(error)
+      return "Error"
     }
   }
 

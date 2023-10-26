@@ -97,29 +97,30 @@ const Cart = (props) => {
   };
 
   return (
-    <>
-      <table>
+    <div className="flex flex-col justify-center items-center gap-9">
+      <table className="border-collapse border border-slate-500 w-3/4">
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Individual Price</th>
-            <th>Quantity</th>
-            <th>Total by product</th>
+            <th class="border border-slate-600">Product</th>
+            <th class="border border-slate-600">Individual Price</th>
+            <th class="border border-slate-600">Quantity</th>
+            <th class="border border-slate-600">Total by product</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product, index) => {
             return (
               <tr key={product._id}>
-                <td>{product.name}</td>
-                <td>{product.price}</td>
-                <td>
+                <td class="border border-slate-600">{product.name}</td>
+                <td class="border border-slate-600">{product.price}</td>
+                <td class="border border-slate-600">
                   <form
                     onSubmit={(e) =>
                       updateQuantity(e, product._id, quantities[index])
                     }
                   >
                     <input
+                    className="text-black"
                       type="number"
                       value={quantities[index]}
                       id="quantity"
@@ -132,12 +133,12 @@ const Cart = (props) => {
                         setQuantities(updatedQuantities);
                       }}
                     />
-                    <button type="submit">Update</button>
+                    <button type="submit" className="bg-orange-700 w-1/4 border rounded-full border-transparent">Update</button>
                   </form>
                 </td>
-                <td>{product.price * quantities[index]}</td>
-                <td>
-                  <button onClick={() => remfromcart(product._id)}>
+                <td class="border border-slate-600">{product.price * quantities[index]}</td>
+                <td class="border border-slate-600">
+                  <button onClick={() => remfromcart(product._id)} className="bg-orange-700 w-1/2 border rounded-full border-transparent">
                     Remove
                   </button>
                 </td>
@@ -146,9 +147,9 @@ const Cart = (props) => {
           })}
         </tbody>
       </table>
-      <h2>Total: ${total}</h2>
-      <button onClick={pay}>Pay</button>
-    </>
+      <h2 className="text-2xl">Total: ${total}</h2>
+      <button onClick={pay} className="bg-orange-700 w-1/4 border rounded-full border-transparent">Pay</button>
+    </div>
   );
 };
 

@@ -37,12 +37,13 @@ const CreateProduct = () => {
   };
 
   return (
-    <div>
-      <h2>New Product</h2>
-      <form id="ProductForm" onSubmit={handleSubmit}>
+    <div className="flex flex-col justify-center items-center gap-5">
+      <h2 className="text-5xl">New Product</h2>
+      <form id="ProductForm" onSubmit={handleSubmit} className="flex flex-col gap-5 justify-center items-center">
         <div>
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name" className="text-xl">Name:</label>
           <input
+          className="text-black mx-5"
             type="text"
             id="name"
             name="name"
@@ -51,8 +52,9 @@ const CreateProduct = () => {
           />
         </div>
         <div>
-          <label htmlFor="price">price:</label>
+          <label htmlFor="price" className="text-xl">Price:</label>
           <input
+          className="text-black mx-5"
             type="price"
             id="price"
             name="price"
@@ -61,8 +63,9 @@ const CreateProduct = () => {
           />
         </div>
         <div>
-          <label htmlFor="description">description:</label>
+          <label htmlFor="description" className="text-xl">Description:</label>
           <input
+          className="text-black mx-5"
             type="description"
             id="description"
             name="description"
@@ -71,8 +74,9 @@ const CreateProduct = () => {
           />
         </div>
         <div>
-          <label htmlFor="stock">stock:</label>
+          <label htmlFor="stock" className="text-xl">Stock:</label>
           <input
+          className="text-black mx-5"
             type="stock"
             id="stock"
             name="stock"
@@ -80,7 +84,7 @@ const CreateProduct = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Create Product</button>
+        <button type="submit" className="bg-orange-700 w-1/2 border rounded-full border-transparent">Create Product</button>
       </form>
     </div>
   );

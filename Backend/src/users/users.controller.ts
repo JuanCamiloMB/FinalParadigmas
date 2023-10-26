@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { userInfo } from 'os';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,6 +26,11 @@ export class UsersController {
   @Get('/api/:email')
   findOneByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
+  }
+
+  @Post('/api/updateuser')
+  updateUser(@Body() userInfo:UpdateUserDto){
+    return this.usersService.updateUser(userInfo)
   }
 
   @Post('/api/addtocart')

@@ -46,25 +46,36 @@ const Product = (props) => {
   useEffect(() => {
     getProduct();
   }, [product]);
+
+  const buttonStyle =
+    "bg-orange-700 w-1/4 border rounded-full border-transparent";
   return (
-    <>
+    <div>
       {fetched ? (
-        <>
-          <h1>{product.name}</h1>
-          <h3>${product.price}</h3>
+        <div className="flex flex-col justify-center items-center gap-5">
+          <h1 className="text-4xl">{product.name}</h1>
+          <h3 className="text-xl">${product.price}</h3>
           <p>{product.description}</p>
           <p>Rating: {product.rating}</p>
           <p>Stock: {product.stock}</p>
           {user === null ? (
-            <button onClick={goToSignIn}>SignIn to Buy</button>
-          ) : (
-            <button onClick={addToCart} disabled={product.stock<1}>Add to cart</button>
+            <button onClick={goToSignIn} className={buttonStyle}>
+              SignIn to Buy
+            </button>
+          ) : user.email === "admin@gmail.com" ? null : (
+            <button
+              onClick={addToCart}
+              disabled={product.stock < 1}
+              className={buttonStyle}
+            >
+              Add to cart
+            </button>
           )}
-        </>
+        </div>
       ) : (
         <h1>Loading..</h1>
       )}
-    </>
+    </div>
   );
 };
 

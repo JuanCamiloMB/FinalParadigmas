@@ -48,22 +48,23 @@ const Products = () => {
   };
 
   return (
-    <>
-      <h1>Products</h1>
+    <div className="flex flex-col justify-center items-center">
+      <h1 className="text-4xl font-bold">Products</h1>
 
       <input
+        className="h-10 w-1/4 p-2.5 m-12 "
         type="search"
         placeholder="Search Juanguicommerce"
         onChange={handleInput}
       />
-      <ul>
+      <ul className="grid grid-cols-2 gap-5">
         {products.map((product) => {
           return (
-            <li key={product._id}>
-              <h3>
+            <li key={product._id} className="bg-orange-700 border rounded-lg p-5">
+              <h3 className="text-2xl">
                 <Link to={"/products/" + product._id}>{product.name}</Link>
               </h3>
-              <h4>{product.price}</h4>
+              <h4>${product.price}</h4>
               <p>{product.description}</p>
               <p>{product.rating}</p>
               <p>{product.stock}</p>
@@ -71,7 +72,7 @@ const Products = () => {
           );
         })}
       </ul>
-    </>
+    </div>
   );
 };
 

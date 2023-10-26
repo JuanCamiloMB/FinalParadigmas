@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -20,9 +20,11 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = async (e) => { //http://localhost:3000/products
+  const handleSubmit = async (e) => {
+    //http://localhost:3000/products
     e.preventDefault();
-    axios.post('http://localhost:3000/users', {
+    axios
+      .post("http://localhost:3000/users", {
         email: formData.email,
         password: formData.password,
         name: formData.name,
@@ -30,7 +32,7 @@ const SignUp = () => {
       })
       .then(function (response) {
         console.log(response);
-        navigate("/signin")
+        navigate("/signin");
       })
       .catch(function (error) {
         console.log(error);
@@ -39,12 +41,19 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h2>SignUp</h2>
-      <form id="SignUpForm" onSubmit={handleSubmit}>
+    <div className="flex flex-col justify-center content-center items-center gap-16 h-full">
+      <h2 className="text-5xl">SignUp</h2>
+      <form
+        id="SignUpForm"
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-5 justify-center items-center"
+      >
         <div>
-          <label htmlFor="email">email:</label>
+          <label htmlFor="email" className="text-2xl">
+            email:
+          </label>
           <input
+            className="mx-7 border bg-orange-200 text-black"
             type="text"
             id="email"
             name="email"
@@ -53,8 +62,11 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password" className="text-2xl">
+            Password:
+          </label>
           <input
+            className="mx-7 border bg-orange-200 text-black"
             type="password"
             id="password"
             name="password"
@@ -63,8 +75,11 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <label htmlFor="name">name:</label>
+          <label htmlFor="name" className="text-2xl">
+            name:
+          </label>
           <input
+            className="mx-7 border bg-orange-200 text-black"
             type="name"
             id="name"
             name="name"
@@ -73,8 +88,11 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <label htmlFor="phone">phone:</label>
+          <label htmlFor="phone" className="text-2xl">
+            phone:
+          </label>
           <input
+            className="mx-7 border bg-orange-200 text-black"
             type="phone"
             id="phone"
             name="phone"
@@ -82,7 +100,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">SignUp</button>
+        <button type="submit" className="w-1/2 text-center bg-orange-700">SignUp</button>
       </form>
     </div>
   );

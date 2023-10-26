@@ -15,7 +15,7 @@ import { Navigate } from "react-router-dom";
 import Loading from "./pages/Loading";
 import Product from "./pages/Product";
 import CreateProduct from "./pages/CreateProduct";
-import Cart from "./pages/cart";
+import Cart from "./pages/Cart";
 
 function App() {
   const [user, setUser] = useState(null);
