@@ -70,6 +70,7 @@ export class UsersService {
   }
 
   async updateUser(userInfo:UpdateUserDto){
+    // return userInfo
     try{
       const document = await this.userModel.findOne({email: userInfo.email})
       if(document){
