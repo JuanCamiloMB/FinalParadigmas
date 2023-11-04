@@ -80,7 +80,7 @@ export class UsersService {
         document.phone = userInfo.phone
         document.TwoFA = userInfo.TwoFA
         document.save()
-        return userInfo
+        return document
       } else{
         return "No user found"
       }

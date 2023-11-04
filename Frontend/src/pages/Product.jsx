@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
+import EditProduct from "../components/EditProduct";
 
 const Product = (props) => {
   const user = props.user;
@@ -10,6 +12,7 @@ const Product = (props) => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [fetched, setFetched] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const goToSignIn = () => {
     navigate("/signin");
@@ -50,7 +53,8 @@ const Product = (props) => {
   const buttonStyle =
     "bg-orange-700 w-1/4 border rounded-full border-transparent";
   return (
-    <div>
+    <div id="ProductInfo" className="flex justify-center items-center">
+      {modalOpen && createPortal(<EditProduct closeModal={setModalOpen} productInfo={product}/>,document.getElementById("ProductInfo"))}
       {fetched ? (
         <div className="flex flex-col justify-center items-center gap-5">
           <h1 className="text-4xl">{product.name}</h1>
@@ -62,7 +66,11 @@ const Product = (props) => {
             <button onClick={goToSignIn} className={buttonStyle}>
               SignIn to Buy
             </button>
-          ) : user.email === "admin@gmail.com" ? null : (
+          ) : user.email === "admin@gmail.com" ? (
+            <button onClick={() => setModalOpen(true)} className={buttonStyle}>
+              Modify Product
+            </button>
+          ) : (
             <button
               onClick={addToCart}
               disabled={product.stock < 1}

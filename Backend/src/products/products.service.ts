@@ -28,8 +28,24 @@ export class ProductsService {
     }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `wtf`;
+  async update(productInfo: UpdateProductDto, id:string) {
+    try{
+      const document = await this.productModel.findById(id)
+      if(document){
+        document.name = productInfo.name
+        document.description = productInfo.description
+        document.price = productInfo.price
+        document.rating = productInfo.rating
+        document.stock = productInfo.stock
+        document.save()
+        return document
+      } else{
+        return "No product found"
+      }
+    }catch(error){
+      console.log(error)
+      return "Error"
+    }
   }
 
   remove(id: number) {
