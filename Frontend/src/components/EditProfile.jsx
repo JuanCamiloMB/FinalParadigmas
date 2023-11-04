@@ -26,7 +26,7 @@ const EditProfile = ({ closeModal, userInfo }) => {
   };
 
   return (
-    <div className="fixed top-1/4 bg-orange-800 w-1/3 h-1/3 flex flex-col justify-center items-center gap-5">
+    <div className="fixed top-1/4 bg-orange-800 w-1/3 h-1/2 flex flex-col justify-center items-center gap-5">
       <h1 className="text-3xl">Edit Profile info</h1>
       <form
         className="flex flex-col gap-5 justify-center items-center"
