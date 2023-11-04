@@ -1,10 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import validator from "validator";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -13,6 +17,9 @@ const SignUp = () => {
   });
 
   const handleChange = (e) => {
+    setEmailError("");
+    setPhoneError("");
+    setNameError("");
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -21,23 +28,38 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e) => {
-    //http://localhost:3000/products
     e.preventDefault();
-    axios
-      .post("http://localhost:3000/users", {
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        phone: formData.phone,
-      })
-      .then(function (response) {
-        console.log(response);
-        navigate("/signin");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    console.log("Submitted:", formData);
+    if (!validator.isEmail(formData.email)) {
+      setEmailError("Not valid email");
+    }
+    if (!validator.isMobilePhone(formData.phone)) {
+      setPhoneError("Not valid phone");
+    }
+    if (validator.isEmpty(formData.name)) {
+      setNameError("Name is required");
+    }
+
+    if (
+      validator.isEmail(formData.email) &&
+      validator.isMobilePhone(formData.phone) &&
+      !validator.isEmpty(formData.name) &&
+      validator.isLength(formData.password, 6)
+    ) {
+      axios
+        .post("http://localhost:3000/users", {
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+          phone: formData.phone,
+        })
+        .then(function (response) {
+          console.log(response);
+          navigate("/signin");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -61,6 +83,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
         </div>
+        <label>{emailError}</label>
         <div>
           <label htmlFor="password" className="text-2xl">
             Password:
@@ -74,6 +97,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
         </div>
+        <label>Password must be at least 6 characters length</label>
         <div>
           <label htmlFor="name" className="text-2xl">
             name:
@@ -87,6 +111,7 @@ const SignUp = () => {
             onChange={handleChange}
           />
         </div>
+        <label>{nameError}</label>
         <div>
           <label htmlFor="phone" className="text-2xl">
             phone:
@@ -100,7 +125,10 @@ const SignUp = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className="w-1/2 text-center bg-orange-700">SignUp</button>
+        <label>{phoneError}</label>
+        <button type="submit" className="w-1/2 text-center bg-orange-700">
+          SignUp
+        </button>
       </form>
     </div>
   );
