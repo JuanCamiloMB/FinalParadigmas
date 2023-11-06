@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 function notSignedIn() {
-  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
-  const nav_style = "p-1.5 m-1.5 flex justify-center bg-orange-700"
+  const div_style = "flex flex-col min-h-screen h-full w-full"
+  const nav_style = "p-4 flex justify-center bg-blue-950 text-white"
   const ul_style = "flex flex-row gap-10"
   return (
     <div className={div_style}>
@@ -31,8 +31,8 @@ function notSignedIn() {
 }
 
 function signedIn(userEmail) {
-  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
-  const nav_style = "p-1.5 m-1.5 flex justify-center bg-orange-700"
+  const div_style = "flex flex-col min-h-screen h-full w-full"
+  const nav_style = "p-4 flex justify-center bg-blue-950 text-white"
   const ul_style = "flex flex-row gap-10"
   return (
     <div className={div_style}>
@@ -60,8 +60,8 @@ function signedIn(userEmail) {
 }
 
 function admin() {
-  const div_style = "flex flex-col gap-7 min-h-screen h-full w-full text-white"
-  const nav_style = "p-1.5 m-1.5 flex justify-center bg-blue-500"
+  const div_style = "flex flex-col min-h-screen h-full w-full"
+  const nav_style = "p-4 flex justify-center bg-blue-950 text-white"
   const ul_style = "flex flex-row gap-10"
   return (
     <div className={div_style}>
