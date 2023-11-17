@@ -3,10 +3,14 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
+import { storage } from "../firebase";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [imagesURL, setImagesURL] = useState(null);
+  const [fetched, setFetched] = useState(false);
   const productsTotal = useRef();
 
   function handlefilter() {
@@ -28,9 +32,31 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
+    getImages();
+  }, []);
+
+  useEffect(() => {
     if (inputText === "" && products.length == 0) return;
     handlefilter();
   }, [inputText]);
+
+  const getImages = async () => {
+    const listRef = ref(storage);
+    const productsImagesUrl = {};
+    const res = await listAll(listRef);
+
+    const promises = res.prefixes.map(async (folderRef) => {
+      const imgRef = ref(folderRef, "img_0");
+      return getDownloadURL(imgRef).then((url) => {
+        productsImagesUrl[folderRef._location.path] = url;
+      });
+    });
+
+    await Promise.all(promises);
+
+    setImagesURL(productsImagesUrl);
+    setFetched(true);
+  };
 
   const getProducts = async () => {
     try {
@@ -59,22 +85,31 @@ const Products = () => {
           />
         </div>
         <ul className="grid grid-cols-2 gap-5 m-12">
-          {products.map((product) => {
-            return (
-              <li
-                key={product._id}
-                className="bg-orange-700 border rounded-lg p-5"
-              >
-                <h3 className="text-2xl">
-                  <Link to={"/products/" + product._id}>{product.name}</Link>
-                </h3>
-                <h4>${product.price}</h4>
-                <p>{product.description}</p>
-                <p>{product.rating}</p>
-                <p>{product.stock}</p>
-              </li>
-            );
-          })}
+          {fetched &&
+            products.map((product) => {
+              return (
+                <li
+                  key={product._id}
+                  className="bg-orange-700 border rounded-lg p-5"
+                >
+                  <Link to={"/products/" + product._id}>
+                  <h3 className="text-2xl">
+                    {product.name}
+                  </h3>
+
+                  <img
+                    src={
+                      product._id in imagesURL ? imagesURL[product._id] : null
+                    }
+                  />
+                  <h4>${product.price}</h4>
+                  <p>{product.description}</p>
+                  <p>{product.rating}</p>
+                  <p>{product.stock}</p>
+                  </Link>
+                </li>
+              );
+            })}
         </ul>
       </div>
     </>

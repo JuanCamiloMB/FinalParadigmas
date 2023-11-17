@@ -5,6 +5,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import EditProduct from "../components/EditProduct";
+import { storage } from "../firebase";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
+import ImageSlider from "../components/ImageSlider/ImageSlider";
 
 const Product = (props) => {
   const user = props.user;
@@ -13,6 +16,7 @@ const Product = (props) => {
   const [product, setProduct] = useState(null);
   const [fetched, setFetched] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [imagesURL, setImagesURL] = useState([]);
 
   const goToSignIn = () => {
     navigate("/signin");
@@ -46,18 +50,47 @@ const Product = (props) => {
     }
   };
 
+  const getImages = async () => {
+    const listRef = ref(storage, `${productId}`);
+    const images_URL = [];
+    const res = await listAll(listRef);
+
+    console.log(res);
+    const promises = res.items.map(async (itemRef) => {
+      const imgRef = ref(itemRef);
+      return getDownloadURL(imgRef).then((url) => {
+        images_URL.push(url);
+      });
+    });
+
+    await Promise.all(promises);
+
+    setImagesURL(images_URL);
+  };
+
   useEffect(() => {
     getProduct();
   }, [product]);
+
+  useEffect(() => {
+    getImages();
+  }, []);
 
   const buttonStyle =
     "bg-orange-700 w-1/4 border rounded-full border-transparent";
   return (
     <div id="ProductInfo" className="flex justify-center items-center">
-      {modalOpen && createPortal(<EditProduct closeModal={setModalOpen} productInfo={product}/>,document.getElementById("ProductInfo"))}
+      {modalOpen &&
+        createPortal(
+          <EditProduct closeModal={setModalOpen} productInfo={product} />,
+          document.getElementById("ProductInfo")
+        )}
       {fetched ? (
         <div className="flex flex-col justify-center items-center gap-5">
           <h1 className="text-4xl">{product.name}</h1>
+
+          <ImageSlider imageURLs={imagesURL}/>
+
           <h3 className="text-xl">${product.price}</h3>
           <p>{product.description}</p>
           <p>Rating: {product.rating}</p>

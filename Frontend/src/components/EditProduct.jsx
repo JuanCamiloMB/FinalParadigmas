@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { storage } from "../firebase";
+import { ref, uploadBytes, deleteObject } from "firebase/storage";
 
 const EditProduct = ({ closeModal, productInfo }) => {
   const [productData, setProductData] = useState(productInfo);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [images, setImages] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,19 +17,46 @@ const EditProduct = ({ closeModal, productInfo }) => {
     });
   };
 
+  const handleImagesChange = (e) => {
+    setImages(e.target.files);
+  };
+
+  const submitImages = async () => {
+    const folderRef = ref(storage, `${productData._id}`);
+    await deleteObject(folderRef)
+      .then(() => {
+        console.log("Images deleted");
+      })
+      .catch((error) => {
+        console.log("error");
+      });
+
+    for (let i = 0; i < images.length; i++) {
+      const imgRef = ref(folderRef, `img_${i}`);
+      await uploadBytes(imgRef, images[i])
+        .then((snaphot) => {
+          console.log("Image uploaded");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-    .post("http://localhost:3000/products/api/updateproduct", 
-    {
+      .post("http://localhost:3000/products/api/updateproduct", {
         productData,
-        id: productData._id
-    }
-    )
-    .then((res) => {
-      console.log(res.data);
-      navigate(0)
-    });
+        id: productData._id,
+      })
+      .then(async (res) => {
+        console.log(res.data);
+        if (images.length > 0) {
+          await submitImages();
+        }
+        navigate(0);
+      });
     // console.log(productData)
   };
 
@@ -75,6 +105,17 @@ const EditProduct = ({ closeModal, productInfo }) => {
             id="stock"
             name="stock"
             className="text-black mx-5"
+          />
+        </div>
+        <div>
+          <input
+            id="imgImput"
+            name="imgInput"
+            type="file"
+            accept="image/png,image/jpeg"
+            placeholder="Upload Images"
+            multiple
+            onChange={handleImagesChange}
           />
         </div>
         <button
