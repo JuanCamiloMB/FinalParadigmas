@@ -84,28 +84,30 @@ const Products = () => {
             onChange={handleInput}
           />
         </div>
-        <ul className="grid grid-cols-2 gap-5 m-12">
+        <ul className="grid grid-cols-2 m-5">
           {fetched &&
             products.map((product) => {
               return (
                 <li
                   key={product._id}
-                  className="bg-orange-700 border rounded-lg p-5"
+                  className="bg-orange-700 border rounded-lg p-5 w-2/3 h-2/3 place-self-center"
                 >
-                  <Link to={"/products/" + product._id}>
-                  <h3 className="text-2xl">
-                    {product.name}
-                  </h3>
+                  <Link
+                    to={"/products/" + product._id}
+                    className=" flex flex-col justify-center items-center w-full h-full"
+                  >
+                    <h3 className="text-2xl">{product.name}</h3>
 
-                  <img
-                    src={
-                      product._id in imagesURL ? imagesURL[product._id] : null
-                    }
-                  />
-                  <h4>${product.price}</h4>
-                  <p>{product.description}</p>
-                  <p>{product.rating}</p>
-                  <p>{product.stock}</p>
+                    <img
+                      className="object-scale-down aspect-square overflow-hidden"
+                      src={
+                        product._id in imagesURL ? imagesURL[product._id] : null
+                      }
+                    />
+                    <h4>${product.price}</h4>
+                    <p>{product.description}</p>
+                    <p>{product.rating}</p>
+                    <p><b>Stock: </b>{product.stock}</p>
                   </Link>
                 </li>
               );

@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './product.schema';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
@@ -48,7 +48,8 @@ export class ProductsService {
     }
   }
 
-  remove(id: number) {
+  async remove(id: ObjectId) {
+    const document = await this.productModel.findByIdAndDelete(id)
     return `This action removes a #${id} product`;
   }
 }

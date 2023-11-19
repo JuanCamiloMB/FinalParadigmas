@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import EditProduct from "../components/EditProduct";
 import { storage } from "../firebase";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { getDownloadURL, listAll, ref, deleteObject } from "firebase/storage";
 import ImageSlider from "../components/ImageSlider/ImageSlider";
 
 const Product = (props) => {
@@ -68,6 +68,28 @@ const Product = (props) => {
     setImagesURL(images_URL);
   };
 
+  const deleteImages = async () => {
+    const folderRef = ref(storage, `${productId}`);
+    await deleteObject(folderRef)
+      .then(() => {
+        console.log("Images deleted");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const removeProduct = () => {
+    axios
+      .post("http://localhost:3000/products/api/deleteproduct", {id:productId})
+      .then(async (res) => {
+        console.log(res.data)
+        await deleteImages();
+        console.log("Everything deleted");
+        navigate("/products");
+      });
+  };
+
   useEffect(() => {
     getProduct();
   }, [product]);
@@ -88,9 +110,9 @@ const Product = (props) => {
       {fetched ? (
         <div className="flex flex-col justify-center items-center gap-5">
           <h1 className="text-4xl">{product.name}</h1>
-
-          <ImageSlider imageURLs={imagesURL}/>
-
+          <div className="h-1/2 overflow-hidden aspect-square">
+          <ImageSlider imageURLs={imagesURL} />
+          </div>
           <h3 className="text-xl">${product.price}</h3>
           <p>{product.description}</p>
           <p>Rating: {product.rating}</p>
@@ -100,9 +122,17 @@ const Product = (props) => {
               SignIn to Buy
             </button>
           ) : user.email === "admin@gmail.com" ? (
-            <button onClick={() => setModalOpen(true)} className={buttonStyle}>
-              Modify Product
-            </button>
+            <>
+              <button
+                onClick={() => setModalOpen(true)}
+                className={buttonStyle}
+              >
+                Modify Product
+              </button>
+              <button className={buttonStyle} onClick={removeProduct}>
+                Remove Product
+              </button>
+            </>
           ) : (
             <button
               onClick={addToCart}

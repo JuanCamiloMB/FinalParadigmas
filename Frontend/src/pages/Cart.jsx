@@ -43,6 +43,7 @@ const Cart = (props) => {
           `http://localhost:3000/products/${element.productId}`
         );
         const result = response.data;
+        console.log(result)
         return result;
       });
       const fetchedProducts = await Promise.all(dataPromises);

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ObjectId } from 'mongoose';
 
 @Controller('products')
 export class ProductsController {
@@ -27,8 +28,8 @@ export class ProductsController {
     return this.productsService.update(req.productData, req.id)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  @Post('/api/deleteproduct')
+  remove(@Body() req: any) {
+    return this.productsService.remove(req.id);
   }
 }

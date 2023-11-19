@@ -10,7 +10,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>,@InjectModel(Product.name) private productModel: Model<Product>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const createdUser = new this.userModel(createUserDto);
@@ -69,24 +72,24 @@ export class UsersService {
     }
   }
 
-  async updateUser(userInfo:UpdateUserDto){
+  async updateUser(userInfo: UpdateUserDto) {
     // return userInfo
-    try{
-      const document = await this.userModel.findOne({email: userInfo.email})
-      if(document){
-        document.email = userInfo.email
-        document.password = userInfo.password
-        document.name = userInfo.name
-        document.phone = userInfo.phone
-        document.TwoFA = userInfo.TwoFA
-        document.save()
-        return document
-      } else{
-        return "No user found"
+    try {
+      const document = await this.userModel.findOne({ email: userInfo.email });
+      if (document) {
+        document.email = userInfo.email;
+        document.password = userInfo.password;
+        document.name = userInfo.name;
+        document.phone = userInfo.phone;
+        document.TwoFA = userInfo.TwoFA;
+        document.save();
+        return document;
+      } else {
+        return 'No user found';
       }
-    }catch(error){
-      console.log(error)
-      return "Error"
+    } catch (error) {
+      console.log(error);
+      return 'Error';
     }
   }
 
@@ -120,57 +123,75 @@ export class UsersService {
     );
   }
 
-  async modifyQuantity(userEmail: string, productId: ObjectId, quantity: number){
-    const document = await this.userModel.findOne({email: userEmail})
-    const cart = document.cart
-    cart.forEach((element)=>{
-      if(element.productId.toString() === productId.toString()){
-        element.quantity = quantity
+  async modifyQuantity(
+    userEmail: string,
+    productId: ObjectId,
+    quantity: number,
+  ) {
+    const document = await this.userModel.findOne({ email: userEmail });
+    const cart = document.cart;
+    cart.forEach((element) => {
+      if (element.productId.toString() === productId.toString()) {
+        element.quantity = quantity;
       }
-    })
-    document.cart = cart
-    document.save()
-    return 
-    
+    });
+    document.cart = cart;
+    document.save();
+    return;
   }
 
-  async remfromcart(userEmail: string, productId: ObjectId){
-    const document = await this.userModel.findOne({email: userEmail});
+  async remfromcart(userEmail: string, productId: ObjectId) {
+    const document = await this.userModel.findOne({ email: userEmail });
     const cart: Array<any> = document.cart;
-    const prodtorem = cart.findIndex((val)=>{
+    const prodtorem = cart.findIndex((val) => {
       return val.productId.toString() === productId;
-    })
-    if(prodtorem === -1){
-      return "Product not in cart"
-    }else{
-      cart.splice(prodtorem,1)
-      document.cart = cart
-      document.save()
+    });
+    if (prodtorem === -1) {
+      return 'Product not in cart';
+    } else {
+      cart.splice(prodtorem, 1);
+      document.cart = cart;
+      document.save();
     }
-    return document
-
+    return document;
   }
 
   async getCart(userEmail: any) {
-    const document = await this.findByEmail(userEmail);
+    const document = await this.userModel.findOne({ email: userEmail });
+    const cart = document.cart;
+    let modified = false;
+    const cartFiltered = await cart.filter(async (product) => {
+      const res = await this.productModel.findById(product.productId)
+      if(res === null){
+        console.log("return false")
+        return false
+      } else{
+        return true
+      }
+    });
+    Promise.all(cartFiltered).then(async (cartDone)=>{
+      document.cart = cartDone;
+      await document.save();
+    })
+
     return document.cart;
   }
 
-  async payCart(userEmail:any, uid:string, total:number){
-    const document = await this.userModel.findOne({email: userEmail});
+  async payCart(userEmail: any, uid: string, total: number) {
+    const document = await this.userModel.findOne({ email: userEmail });
     const cart = document.cart;
-    
+
     //Bank API here
 
-    cart.forEach(async (element)=>{
-      const doc = await this.productModel.findOne({_id: element.productId})
-      doc.stock -= element.quantity
-      await doc.save()
-    })
+    cart.forEach(async (element) => {
+      const doc = await this.productModel.findOne({ _id: element.productId });
+      doc.stock -= element.quantity;
+      await doc.save();
+    });
 
-    document.cart = []
-    document.save()
+    document.cart = [];
+    document.save();
 
-    return "Done payment"
+    return 'Done payment';
   }
 }
